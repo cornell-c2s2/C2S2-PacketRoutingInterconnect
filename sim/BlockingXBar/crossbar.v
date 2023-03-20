@@ -9,7 +9,8 @@ module crossbarVRTL(
     #(
         parameter BIT_WIDTH = 32, 
         parameter N_INPUTS = 2,
-        parameter N_OUTPUTS = 2
+        parameter N_OUTPUTS = 2,
+        parameter CONTROL_BIT_WIDTH = 42
     )
 
     (
@@ -24,26 +25,45 @@ module crossbarVRTL(
         input  logic                   reset                     ,
         input  logic                   clk                       ,
 
-        input  logic [41:0]            control                   ,
-
-        input  logic [BIT_WIDTH - 1:0] in       [N_INPUTS - 1:0] ,
-        output logic [BIT_WIDTH - 1:0] out      [N_OUTPUTS - 1:0],
+        input  logic [CONTROL_BIT_WIDTH - 1:0]      control          ,
+        input  logic                   control_val               ,
+        output logic                   control_rdy               ,
     );
 
-    logic [$clog2(N_INPUTS) - 1:0] muxsel = control[41 : 42-$clog2(N_INPUTS)];
-    logic [$clog2(N_OUTPUTS) - 1:0] decsel = control[42-$clog2(N_INPUTS) : 42-$clog2(N_INPUTS)-$clog2(N_OUTPUTS)];
-
-    logic [BIT_WIDTH - 1:0] mid; 
+    logic [CONTROL_BIT_WIDTH - 1:0] stored_control;
 
     always @(*) begin
-        for (int i = 0; i < N_OUTPUTS; i++) begin
-            out[i] = 0;
+        if ( control_val ) begin
+            stored_control = control;
+            control_rdy = control_val;
         end
     end
 
-    vc_MuxN #(N_INPUTS) input_mux (.in(in), .sel(muxsel), .out(out[decsel]));
+    logic [$clog2(N_INPUTS) - 1:0] muxsel = stored_control[41 : 42-$clog2(N_INPUTS)];
+    logic [$clog2(N_OUTPUTS) - 1:0] decsel = stored_control[42-$clog2(N_INPUTS) : 42-$clog2(N_INPUTS)-$clog2(N_OUTPUTS)];
 
-    vc_MuxN #(N_INPUTS) valid_mux (.in(recv_rdy), .sel(muxsel), .out(send_val[decsel]));
+
+    always @(*) begin
+        for (int i = 0; i < N_OUTPUTS; i++) begin
+            if ( i == decsel ) begin
+                send_msg[i] = recv_msg[muxsel];
+                send_val[i] = recv_val[muxsel];
+            end
+            else begin
+                send_msg[i] = 0;
+                send_val[i] = 0;
+            end
+        end
+
+        for (int j = 0; i < N_INPUTS; j++) begin
+            if (j == muxsel) begin
+                recv_rdy[j] = send_rdy[decsel]; 
+            end
+            else begin
+                recv_rdy[j] = 0;
+            end
+        end
+    end
 
 endmodule
 
