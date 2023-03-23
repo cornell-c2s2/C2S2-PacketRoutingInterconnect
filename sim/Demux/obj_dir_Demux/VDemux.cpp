@@ -30,7 +30,7 @@ void VDemux::eval_step() {
             Verilated::debug(1);
             __Vchange = _change_request(vlSymsp);
             Verilated::debug(__Vsaved_debug);
-            VL_FATAL_MT("parametricDemuxVTRL.v", 73, "",
+            VL_FATAL_MT("parametricDemuxVTRL.v", 43, "",
                 "Verilated model didn't converge\n"
                 "- See DIDNOTCONVERGE in the Verilator manual");
         } else {
@@ -55,7 +55,7 @@ void VDemux::_eval_initial_loop(VDemux__Syms* __restrict vlSymsp) {
             Verilated::debug(1);
             __Vchange = _change_request(vlSymsp);
             Verilated::debug(__Vsaved_debug);
-            VL_FATAL_MT("parametricDemuxVTRL.v", 73, "",
+            VL_FATAL_MT("parametricDemuxVTRL.v", 43, "",
                 "Verilated model didn't DC converge\n"
                 "- See DIDNOTCONVERGE in the Verilator manual");
         } else {
@@ -68,16 +68,6 @@ VL_INLINE_OPT void VDemux::_combo__TOP__1(VDemux__Syms* __restrict vlSymsp) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    VDemux::_combo__TOP__1\n"); );
     VDemux* const __restrict vlTOPp VL_ATTR_UNUSED = vlSymsp->TOPp;
     // Body
-    vlTOPp->Demux__DOT__v__DOT__out_val = (((~ ((IData)(3U) 
-                                                << 
-                                                (3U 
-                                                 & ((IData)(vlTOPp->sel) 
-                                                    << 1U)))) 
-                                            & (IData)(vlTOPp->Demux__DOT__v__DOT__out_val)) 
-                                           | ((IData)(vlTOPp->in_val) 
-                                              << (3U 
-                                                  & ((IData)(vlTOPp->sel) 
-                                                     << 1U))));
     vlTOPp->Demux__DOT__v__DOT__out_val = ((0xcU & (IData)(vlTOPp->Demux__DOT__v__DOT__out_val)) 
                                            | ((IData)(vlTOPp->sel)
                                                ? 0U

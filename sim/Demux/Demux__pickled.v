@@ -30,37 +30,11 @@
 // End of all v_libs files for component parametricDemuxVTRL__p_nbits_2__p_noutputs_2
 
 `line 1 "parametricDemuxVTRL.v" 0
-// module parametricDemuxVTRL
-// #(
-//   //length of message
-//   parameter p_nbits = 1,   
-//   parameter p_noutputs = 2
-// )
-// (
-//   input  wire [p_nbits-1:0]                  in_val,
-//   input  wire [$clog2(p_noutputs)-1:0]       sel,
-//   //output  wire [p_noutputs-1:0][p_nbits-1:0] out_val
-//   output wire [p_noutputs*p_nbits-1:0] flattened_out_val
-// );
-
-//   // for sake of testing 
-//   wire [p_noutputs-1:0][p_nbits-1:0] out_val;
-
-//   // Set all outputs to 0 (the right bit length too but not sure if this matters)
-//   assign out_val = {p_noutputs{1'b0}};
-  
-//   // Set the selected output to the input value
-//   assign out_val[sel] = in_val; 
-
-//   assign flattened_out_val = {out_val};
-
-// endmodule
-
-
 module parametricDemuxVTRL
 #(
   //length of message
   parameter p_nbits = 1,   
+  //Number of outputs
   parameter p_noutputs = 2
 )
 (
@@ -69,13 +43,10 @@ module parametricDemuxVTRL
   output wire [p_noutputs*p_nbits-1:0]       flattened_out_val
 );
 
-  // For sake of testing 
+  // This is the normal output, but for test, all of its values concatonated into flattened_out_val
   wire [p_noutputs-1:0][p_nbits-1:0] out_val;
 
-  // Set selected output to input value
-  assign out_val[sel] = in_val; 
 
-  // Set non-selected outputs to 0
   genvar i;
   generate
     for (i = 0; i < p_noutputs; i = i + 1) begin : output_gen
@@ -84,7 +55,6 @@ module parametricDemuxVTRL
   endgenerate
 
   // Concatenate output values
-  // assign flattened_out_val = {out_val};
   generate
     for (genvar i = 0; i < p_noutputs; i = i + 1) begin : output_gen
       assign flattened_out_val[i*p_nbits +: p_nbits] = out_val[p_noutputs - 1 - i];
