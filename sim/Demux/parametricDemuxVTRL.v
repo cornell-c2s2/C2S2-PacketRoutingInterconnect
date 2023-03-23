@@ -12,6 +12,7 @@ module parametricDemuxVTRL
 );
 
   // This is the normal output, but for test, all of its values concatonated into flattened_out_val
+  // For actual use of module, make this an output wire
   wire [p_noutputs-1:0][p_nbits-1:0] out_val;
 
 
@@ -23,6 +24,7 @@ module parametricDemuxVTRL
   endgenerate
 
   // Concatenate output values
+  // REMOVE WHEN NOT TESTING AND SET OUTPUT VALUE TO OUT_VAL
   generate
     for (genvar i = 0; i < p_noutputs; i = i + 1) begin : output_gen
       assign flattened_out_val[i*p_nbits +: p_nbits] = out_val[p_noutputs - 1 - i];
