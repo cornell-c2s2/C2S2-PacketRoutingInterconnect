@@ -9,6 +9,7 @@ module Router
   input wire  [p_nbits-1:0]                                     message_in, 
   output wire [p_noutputs-1:0]                                  valid_out, 
   output wire [p_noutputs-1:0][p_nbits-$clog(p_noutputs)-1:0]   message_out,
+  //put first bracket before output wire above
   output wire [p_noutputs-1:0]                                  ready_out
 );
 
