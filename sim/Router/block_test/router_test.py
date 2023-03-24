@@ -31,10 +31,3 @@ def test_simple2( cmdline_opts ):
     [0x1, 0x8, 0xf, 0x8, 0x1, 0xff],
     [0x1, 0x0, 0x8, 0x0, 0x0, 0x0],
   ],cmdline_opts)
-
-
-      # s.valid = InPort(1)
-      # s.ready = InPort(mk_bits(p_noutputs))
-      # s.message_in = InPort(mk_bits(p_nbits))
-      # s.valid_out = OutPort(mk_bits(p_noutputs))
-      # s.ready_out = OutPort(mk_bits(p_noutputs))

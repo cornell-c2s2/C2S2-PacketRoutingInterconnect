@@ -7,7 +7,6 @@ import math
 
 
 
-
 class routerVRTL( VerilogPlaceholder, Component ):
 
   # Constructor
