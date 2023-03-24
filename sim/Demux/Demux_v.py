@@ -118,9 +118,9 @@ class Demux( Component ):
     _ffi_inst_seq_eval  = s._ffi_inst.seq_eval
 
     # declare the port interface
-    s.flattened_out_val = OutPort( Bits4 )
+    s.flattened_out_val = OutPort( Bits8 )
     s.in_val = InPort( Bits2 )
-    s.sel = InPort( Bits1 )
+    s.sel = InPort( Bits2 )
 
     # update blocks that converts ffi interface to/from pymtl ports
     
@@ -129,12 +129,12 @@ class Demux( Component ):
     def isignal_s_DOT_in_val():
       s.s_DOT_in_val @= s.in_val
     
-    s.s_DOT_sel = Wire( Bits1 )
+    s.s_DOT_sel = Wire( Bits2 )
     @update
     def isignal_s_DOT_sel():
       s.s_DOT_sel @= s.sel
     
-    s.s_DOT_flattened_out_val = Wire( Bits4 )
+    s.s_DOT_flattened_out_val = Wire( Bits8 )
     @update
     def osignal_s_DOT_flattened_out_val():
       s.flattened_out_val @= s.s_DOT_flattened_out_val

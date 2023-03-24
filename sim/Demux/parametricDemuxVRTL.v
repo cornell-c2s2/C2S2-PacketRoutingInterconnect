@@ -1,4 +1,4 @@
-module parametricDemuxVTRL
+module parametricDemuxVRTL
 #(
   //length of message
   parameter p_nbits = 1,   

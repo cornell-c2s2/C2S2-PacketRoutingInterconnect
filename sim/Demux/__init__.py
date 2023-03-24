@@ -1,1 +1,1 @@
-from .parametricDemuxRTL import parametricDemuxVTRL
+from .parametricDemuxRTL import parametricDemuxVRTL

@@ -52,8 +52,8 @@ void VDemux::_ctor_var_reset() {
     // Body
     reset = VL_RAND_RESET_I(1);
     clk = VL_RAND_RESET_I(1);
-    flattened_out_val = VL_RAND_RESET_I(4);
+    flattened_out_val = VL_RAND_RESET_I(8);
     in_val = VL_RAND_RESET_I(2);
-    sel = VL_RAND_RESET_I(1);
-    Demux__DOT__v__DOT__out_val = VL_RAND_RESET_I(4);
+    sel = VL_RAND_RESET_I(2);
+    Demux__DOT__v__DOT__out_val = VL_RAND_RESET_I(8);
 }

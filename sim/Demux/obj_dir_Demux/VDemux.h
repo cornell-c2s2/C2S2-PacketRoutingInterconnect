@@ -24,13 +24,13 @@ VL_MODULE(VDemux) {
     // propagate new values into/out from the Verilated model.
     VL_IN8(reset,0,0);
     VL_IN8(clk,0,0);
-    VL_OUT8(flattened_out_val,3,0);
+    VL_OUT8(flattened_out_val,7,0);
     VL_IN8(in_val,1,0);
-    VL_IN8(sel,0,0);
+    VL_IN8(sel,1,0);
     
     // LOCAL SIGNALS
     // Internals; generally not touched by application code
-    CData/*3:0*/ Demux__DOT__v__DOT__out_val;
+    CData/*7:0*/ Demux__DOT__v__DOT__out_val;
     
     // INTERNAL VARIABLES
     // Internals; generally not touched by application code
