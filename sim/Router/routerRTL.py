@@ -7,7 +7,7 @@ import math
 
 
 
-class routerVRTL( VerilogPlaceholder, Component ):
+class routerTestHarnessVRTL( VerilogPlaceholder, Component ):
 
   # Constructor
     def construct( s, p_nbits, p_noutputs):
@@ -23,10 +23,8 @@ class routerVRTL( VerilogPlaceholder, Component ):
       s.ready_out = OutPort(1)
       s.message_out = OutPort(mk_bits(p_noutputs*(p_nbits - math.ceil(math.log2(p_noutputs)))))
 
-      #need output port
 
-
-Router = routerVRTL
+Router = routerTestHarnessVRTL
 
 
 

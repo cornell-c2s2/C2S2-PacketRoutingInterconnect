@@ -30,7 +30,7 @@ void VRouter::eval_step() {
             Verilated::debug(1);
             __Vchange = _change_request(vlSymsp);
             Verilated::debug(__Vsaved_debug);
-            VL_FATAL_MT("routerVRTL.v", 57, "",
+            VL_FATAL_MT("routerTestHarnessVRTL.v", 55, "",
                 "Verilated model didn't converge\n"
                 "- See DIDNOTCONVERGE in the Verilator manual");
         } else {
@@ -55,7 +55,7 @@ void VRouter::_eval_initial_loop(VRouter__Syms* __restrict vlSymsp) {
             Verilated::debug(1);
             __Vchange = _change_request(vlSymsp);
             Verilated::debug(__Vsaved_debug);
-            VL_FATAL_MT("routerVRTL.v", 57, "",
+            VL_FATAL_MT("routerTestHarnessVRTL.v", 55, "",
                 "Verilated model didn't DC converge\n"
                 "- See DIDNOTCONVERGE in the Verilator manual");
         } else {
@@ -68,40 +68,55 @@ VL_INLINE_OPT void VRouter::_combo__TOP__1(VRouter__Syms* __restrict vlSymsp) {
     VL_DEBUG_IF(VL_DBG_MSGF("+    VRouter::_combo__TOP__1\n"); );
     VRouter* const __restrict vlTOPp VL_ATTR_UNUSED = vlSymsp->TOPp;
     // Body
-    vlTOPp->message_out = (0xffU & ((0xc0U & ((IData)(vlTOPp->message_in) 
-                                              << 6U)) 
-                                    | ((0x30U & ((IData)(vlTOPp->message_in) 
-                                                 << 4U)) 
-                                       | ((0xcU & ((IData)(vlTOPp->message_in) 
-                                                   << 2U)) 
-                                          | (3U & (IData)(vlTOPp->message_in))))));
+    vlTOPp->Router__DOT__v__DOT____Vcellout__router_inst__message_out[0U] 
+        = (7U & (IData)(vlTOPp->message_in));
+    vlTOPp->Router__DOT__v__DOT____Vcellout__router_inst__message_out[1U] 
+        = (7U & (IData)(vlTOPp->message_in));
     vlTOPp->ready_out = (1U & ((IData)(vlTOPp->ready) 
-                               >> (3U & ((IData)(vlTOPp->message_in) 
-                                         >> 2U))));
-    vlTOPp->Router__DOT__v__DOT____Vcellout__demux_inst__out_val 
-        = ((0xeU & (IData)(vlTOPp->Router__DOT__v__DOT____Vcellout__demux_inst__out_val)) 
-           | ((0U == (3U & ((IData)(vlTOPp->message_in) 
-                            >> 2U))) & (IData)(vlTOPp->valid)));
-    vlTOPp->Router__DOT__v__DOT____Vcellout__demux_inst__out_val 
-        = ((0xdU & (IData)(vlTOPp->Router__DOT__v__DOT____Vcellout__demux_inst__out_val)) 
-           | (((1U == (3U & ((IData)(vlTOPp->message_in) 
-                             >> 2U))) & (IData)(vlTOPp->valid)) 
-              << 1U));
-    vlTOPp->Router__DOT__v__DOT____Vcellout__demux_inst__out_val 
-        = ((0xbU & (IData)(vlTOPp->Router__DOT__v__DOT____Vcellout__demux_inst__out_val)) 
-           | (((2U == (3U & ((IData)(vlTOPp->message_in) 
-                             >> 2U))) & (IData)(vlTOPp->valid)) 
-              << 2U));
-    vlTOPp->Router__DOT__v__DOT____Vcellout__demux_inst__out_val 
-        = ((7U & (IData)(vlTOPp->Router__DOT__v__DOT____Vcellout__demux_inst__out_val)) 
-           | (((3U == (3U & ((IData)(vlTOPp->message_in) 
-                             >> 2U))) & (IData)(vlTOPp->valid)) 
-              << 3U));
-    vlTOPp->valid_out = ((1U & ((IData)(vlTOPp->ready) 
-                                >> (3U & ((IData)(vlTOPp->message_in) 
-                                          >> 2U))))
-                          ? (0xfU & (IData)(vlTOPp->Router__DOT__v__DOT____Vcellout__demux_inst__out_val))
-                          : 0U);
+                               >> (1U & ((IData)(vlTOPp->message_in) 
+                                         >> 3U))));
+    vlTOPp->Router__DOT__v__DOT__router_inst__DOT____Vcellout__demux_inst__out_val[0U] 
+        = ((~ ((IData)(vlTOPp->message_in) >> 3U)) 
+           & (IData)(vlTOPp->valid));
+    vlTOPp->Router__DOT__v__DOT__router_inst__DOT____Vcellout__demux_inst__out_val[1U] 
+        = (((IData)(vlTOPp->message_in) >> 3U) & (IData)(vlTOPp->valid));
+    vlTOPp->Router__DOT__v__DOT__temp_message_out[1U] 
+        = vlTOPp->Router__DOT__v__DOT____Vcellout__router_inst__message_out
+        [1U];
+    vlTOPp->Router__DOT__v__DOT__temp_message_out[0U] 
+        = vlTOPp->Router__DOT__v__DOT____Vcellout__router_inst__message_out
+        [0U];
+    vlTOPp->Router__DOT__v__DOT__router_inst__DOT__valid_holder[1U] 
+        = vlTOPp->Router__DOT__v__DOT__router_inst__DOT____Vcellout__demux_inst__out_val
+        [1U];
+    vlTOPp->Router__DOT__v__DOT__router_inst__DOT__valid_holder[0U] 
+        = vlTOPp->Router__DOT__v__DOT__router_inst__DOT____Vcellout__demux_inst__out_val
+        [0U];
+    vlTOPp->message_out = ((0x38U & (IData)(vlTOPp->message_out)) 
+                           | vlTOPp->Router__DOT__v__DOT__temp_message_out
+                           [1U]);
+    vlTOPp->message_out = ((7U & (IData)(vlTOPp->message_out)) 
+                           | (vlTOPp->Router__DOT__v__DOT__temp_message_out
+                              [0U] << 3U));
+    vlTOPp->Router__DOT__v__DOT__temp_valid_out = (
+                                                   (2U 
+                                                    & (IData)(vlTOPp->Router__DOT__v__DOT__temp_valid_out)) 
+                                                   | ((IData)(vlTOPp->ready_out) 
+                                                      & vlTOPp->Router__DOT__v__DOT__router_inst__DOT__valid_holder
+                                                      [0U]));
+    vlTOPp->Router__DOT__v__DOT__temp_valid_out = (
+                                                   (1U 
+                                                    & (IData)(vlTOPp->Router__DOT__v__DOT__temp_valid_out)) 
+                                                   | (((IData)(vlTOPp->ready_out) 
+                                                       & vlTOPp->Router__DOT__v__DOT__router_inst__DOT__valid_holder
+                                                       [1U]) 
+                                                      << 1U));
+    vlTOPp->valid_out = ((2U & (IData)(vlTOPp->valid_out)) 
+                         | (1U & ((IData)(vlTOPp->Router__DOT__v__DOT__temp_valid_out) 
+                                  >> 1U)));
+    vlTOPp->valid_out = ((1U & (IData)(vlTOPp->valid_out)) 
+                         | (2U & ((IData)(vlTOPp->Router__DOT__v__DOT__temp_valid_out) 
+                                  << 1U)));
 }
 
 void VRouter::_eval(VRouter__Syms* __restrict vlSymsp) {
@@ -137,7 +152,7 @@ void VRouter::_eval_debug_assertions() {
         Verilated::overWidthError("clk");}
     if (VL_UNLIKELY((message_in & 0xf0U))) {
         Verilated::overWidthError("message_in");}
-    if (VL_UNLIKELY((ready & 0xf0U))) {
+    if (VL_UNLIKELY((ready & 0xfcU))) {
         Verilated::overWidthError("ready");}
     if (VL_UNLIKELY((valid & 0xfeU))) {
         Verilated::overWidthError("valid");}

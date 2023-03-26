@@ -122,11 +122,11 @@ class Router( Component ):
 
     # declare the port interface
     s.message_in = InPort( Bits4 )
-    s.message_out = OutPort( Bits8 )
-    s.ready = InPort( Bits4 )
+    s.message_out = OutPort( Bits6 )
+    s.ready = InPort( Bits2 )
     s.ready_out = OutPort( Bits1 )
     s.valid = InPort( Bits1 )
-    s.valid_out = OutPort( Bits4 )
+    s.valid_out = OutPort( Bits2 )
 
     # update blocks that converts ffi interface to/from pymtl ports
     
@@ -135,7 +135,7 @@ class Router( Component ):
     def isignal_s_DOT_message_in():
       s.s_DOT_message_in @= s.message_in
     
-    s.s_DOT_ready = Wire( Bits4 )
+    s.s_DOT_ready = Wire( Bits2 )
     @update
     def isignal_s_DOT_ready():
       s.s_DOT_ready @= s.ready
@@ -145,7 +145,7 @@ class Router( Component ):
     def isignal_s_DOT_valid():
       s.s_DOT_valid @= s.valid
     
-    s.s_DOT_message_out = Wire( Bits8 )
+    s.s_DOT_message_out = Wire( Bits6 )
     @update
     def osignal_s_DOT_message_out():
       s.message_out @= s.s_DOT_message_out
@@ -155,7 +155,7 @@ class Router( Component ):
     def osignal_s_DOT_ready_out():
       s.ready_out @= s.s_DOT_ready_out
     
-    s.s_DOT_valid_out = Wire( Bits4 )
+    s.s_DOT_valid_out = Wire( Bits2 )
     @update
     def osignal_s_DOT_valid_out():
       s.valid_out @= s.s_DOT_valid_out

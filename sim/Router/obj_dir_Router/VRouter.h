@@ -25,15 +25,22 @@ VL_MODULE(VRouter) {
     VL_IN8(reset,0,0);
     VL_IN8(clk,0,0);
     VL_IN8(message_in,3,0);
-    VL_OUT8(message_out,7,0);
-    VL_IN8(ready,3,0);
+    VL_OUT8(message_out,5,0);
+    VL_IN8(ready,1,0);
     VL_OUT8(ready_out,0,0);
     VL_IN8(valid,0,0);
-    VL_OUT8(valid_out,3,0);
+    VL_OUT8(valid_out,1,0);
+    
+    // LOCAL SIGNALS
+    // Internals; generally not touched by application code
+    CData/*1:0*/ Router__DOT__v__DOT__temp_valid_out;
+    CData/*2:0*/ Router__DOT__v__DOT__temp_message_out[2];
+    CData/*0:0*/ Router__DOT__v__DOT__router_inst__DOT__valid_holder[2];
     
     // LOCAL VARIABLES
     // Internals; generally not touched by application code
-    CData/*3:0*/ Router__DOT__v__DOT____Vcellout__demux_inst__out_val;
+    CData/*2:0*/ Router__DOT__v__DOT____Vcellout__router_inst__message_out[2];
+    CData/*0:0*/ Router__DOT__v__DOT__router_inst__DOT____Vcellout__demux_inst__out_val[2];
     
     // INTERNAL VARIABLES
     // Internals; generally not touched by application code

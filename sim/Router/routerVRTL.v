@@ -6,24 +6,24 @@ module routerVRTL
   parameter p_nbits = 8,
   parameter p_noutputs = 8
 )(
-  input wire                                                    valid,
-  input wire  [p_noutputs-1:0]                                  ready,
-  input wire  [p_nbits-1:0]                                     message_in, 
-  output wire [p_noutputs-1:0][p_nbits-1:0]                     valid_out, 
-  output wire                                                   ready_out,
-  //[p_noutputs-1:0] output wire [p_nbits-$clog(p_noutputs)-1:0]  message_out,
-  output wire [(p_nbits-$clog2(p_noutputs))*p_noutputs-1:0]     message_out                
+  input logic                                                    valid,
+  // input logic  [p_noutputs-1:0]                                  ready, (the orientation below is more accurate)
+  input logic [p_noutputs-1:0]                                   ready, 
+  input logic  [p_nbits-1:0]                                     message_in, 
+  output logic                                                  ready_out,
+  output logic [p_noutputs-1:0]                                 valid_out, 
+  output logic [p_nbits-$clog2(p_noutputs)-1:0] message_out [p_noutputs-1:0]
 );
 
-wire [p_nbits-1 : p_nbits-$clog2(p_noutputs)] select;
-wire [p_nbits-$clog2(p_noutputs)-1:0] cut_message;
-wire [p_noutputs-1:0][p_nbits-1:0] valid_holder;
-
+//WHAT COMES OUT OF DEMUX (temporary val)
+logic valid_holder [p_noutputs-1:0];
+logic [p_nbits-1 : p_nbits-$clog2(p_noutputs)] select;
+logic [p_nbits-$clog2(p_noutputs)-1:0] cut_message;
 
 assign select = message_in[p_nbits-1 : p_nbits-$clog2(p_noutputs)];
 assign cut_message = message_in[p_nbits-$clog2(p_noutputs)-1:0];
 
-  vc_MuxN #(                   // mux selecting the ready bit for the selected port
+  vc_MuxN #(                   
     .p_nbits(1),               
     .p_ninputs(p_noutputs)     
   ) mux_inst (
@@ -32,7 +32,7 @@ assign cut_message = message_in[p_nbits-$clog2(p_noutputs)-1:0];
     .out(ready_out)
   );
 
-  parametricDemuxVRTL #(
+  parametricDemuxVRTL #(       
     .p_nbits(1),               
     .p_noutputs(p_noutputs)     
   ) demux_inst (
@@ -41,7 +41,15 @@ assign cut_message = message_in[p_nbits-$clog2(p_noutputs)-1:0];
     .out_val(valid_holder)
   );
 
-  assign valid_out = ((ready[select]==1)) ? valid_holder : 1'b0;
-  assign message_out = {p_noutputs{cut_message}};
+  generate
+    for ( genvar j = 0; j < p_noutputs; j = j + 1) begin : output_gen
+      assign valid_out[j] = (ready_out == 1) ? valid_holder[j] : 1'b0;
+    end
+  endgenerate
 
+  generate
+    for ( genvar k = 0; k < p_noutputs; k = k + 1) begin : output_gen
+      assign message_out[k] = cut_message;
+    end
+  endgenerate
 endmodule

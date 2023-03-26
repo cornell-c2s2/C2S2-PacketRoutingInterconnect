@@ -1,1 +1,1 @@
-from .routerRTL import routerVRTL
+from .routerRTL import routerTestHarnessVRTL
