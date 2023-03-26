@@ -34,12 +34,15 @@ VL_MODULE(VRouter) {
     // LOCAL SIGNALS
     // Internals; generally not touched by application code
     CData/*1:0*/ Router__DOT__v__DOT__temp_valid_out;
+    CData/*1:0*/ Router__DOT__v__DOT__router_inst__DOT__temp_ready;
     CData/*2:0*/ Router__DOT__v__DOT__temp_message_out[2];
+    CData/*0:0*/ Router__DOT__v__DOT__temp_ready[2];
     CData/*0:0*/ Router__DOT__v__DOT__router_inst__DOT__valid_holder[2];
     
     // LOCAL VARIABLES
     // Internals; generally not touched by application code
     CData/*2:0*/ Router__DOT__v__DOT____Vcellout__router_inst__message_out[2];
+    CData/*0:0*/ Router__DOT__v__DOT____Vcellinp__router_inst__ready[2];
     CData/*0:0*/ Router__DOT__v__DOT__router_inst__DOT____Vcellout__demux_inst__out_val[2];
     
     // INTERNAL VARIABLES

@@ -49,7 +49,6 @@ def test_two( cmdline_opts ):
 def test_three( cmdline_opts ):
   dut = routerTestHarnessVRTL(p_nbits=40, p_noutputs=8)
 
-
   # if the wrong ready is selected, valid_out will be zero. 
   # [0x1, 0x1, 0x2FFFFFFFFF, 0x80, 0x1, 0x1FFFFFFFFF] will have valid_out as zero bc ready in does not correspond to the
   # MSB of input. 

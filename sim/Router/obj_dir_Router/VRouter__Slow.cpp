@@ -63,11 +63,18 @@ void VRouter::_ctor_var_reset() {
     }}
     Router__DOT__v__DOT__temp_valid_out = VL_RAND_RESET_I(2);
     { int __Vi0=0; for (; __Vi0<2; ++__Vi0) {
+            Router__DOT__v__DOT__temp_ready[__Vi0] = VL_RAND_RESET_I(1);
+    }}
+    { int __Vi0=0; for (; __Vi0<2; ++__Vi0) {
             Router__DOT__v__DOT____Vcellout__router_inst__message_out[__Vi0] = VL_RAND_RESET_I(3);
+    }}
+    { int __Vi0=0; for (; __Vi0<2; ++__Vi0) {
+            Router__DOT__v__DOT____Vcellinp__router_inst__ready[__Vi0] = VL_RAND_RESET_I(1);
     }}
     { int __Vi0=0; for (; __Vi0<2; ++__Vi0) {
             Router__DOT__v__DOT__router_inst__DOT__valid_holder[__Vi0] = VL_RAND_RESET_I(1);
     }}
+    Router__DOT__v__DOT__router_inst__DOT__temp_ready = VL_RAND_RESET_I(2);
     { int __Vi0=0; for (; __Vi0<2; ++__Vi0) {
             Router__DOT__v__DOT__router_inst__DOT____Vcellout__demux_inst__out_val[__Vi0] = VL_RAND_RESET_I(1);
     }}
