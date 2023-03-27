@@ -1,1 +1,1 @@
-from .RegIncRTL import RegIncVRTL
+from .crossbarRTL import crossbarTestHarnessVRTL
