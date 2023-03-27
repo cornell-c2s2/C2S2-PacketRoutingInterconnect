@@ -1,8 +1,6 @@
 `ifndef PROJECT_CROSSBAR_V
 `define PROJECT_CROSSBAR_V
 
-`include "muxes.v"
-`include "parametricDemuxVRTL.v"
 
 //Crossbar in Verilog
 
