@@ -1,1 +1,1 @@
-from .parametricDemuxRTL import parametricDemuxVRTL
+from .parametricDemuxRTL import parametricDemuxTestHarnessVRTL

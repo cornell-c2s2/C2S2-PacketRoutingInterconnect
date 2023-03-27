@@ -13,7 +13,6 @@
   output logic [(p_nbits-$clog2(p_noutputs))*p_noutputs-1:0]     message_out     
 );
 
-
 logic [(p_nbits-$clog2(p_noutputs))-1:0]  temp_message_out  [p_noutputs-1:0];
 logic [p_noutputs-1:0] temp_valid_out;
 logic temp_ready [p_noutputs-1:0];
@@ -47,7 +46,5 @@ logic temp_ready [p_noutputs-1:0];
       assign temp_ready[p_noutputs-k-1] = ready[k +: 1];
     end
   endgenerate
-  // assign temp_ready = {ready};
-
   endmodule
 

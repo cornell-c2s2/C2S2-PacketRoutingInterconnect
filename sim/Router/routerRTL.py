@@ -21,6 +21,8 @@ class routerTestHarnessVRTL( VerilogPlaceholder, Component ):
       s.message_in = InPort(mk_bits(p_nbits))
       s.valid_out = OutPort(mk_bits(p_noutputs))
       s.ready_out = OutPort(1)
+      
+      #Length of all cut messages.
       s.message_out = OutPort(mk_bits(p_noutputs*(p_nbits - math.ceil(math.log2(p_noutputs)))))
 
 

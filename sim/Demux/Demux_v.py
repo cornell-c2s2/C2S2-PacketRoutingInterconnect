@@ -31,8 +31,8 @@ class Demux( Component ):
       typedef struct {
 
         // Exposed port interface
-        unsigned char * flattened_out_val;        
-        unsigned char * in_val;        
+        unsigned int * flattened_out_val;        
+        unsigned int * in_val;        
         unsigned char * sel;
 
         // Verilator model
@@ -118,23 +118,23 @@ class Demux( Component ):
     _ffi_inst_seq_eval  = s._ffi_inst.seq_eval
 
     # declare the port interface
-    s.flattened_out_val = OutPort( Bits8 )
-    s.in_val = InPort( Bits2 )
-    s.sel = InPort( Bits2 )
+    s.flattened_out_val = OutPort( Bits272 )
+    s.in_val = InPort( Bits17 )
+    s.sel = InPort( Bits4 )
 
     # update blocks that converts ffi interface to/from pymtl ports
     
-    s.s_DOT_in_val = Wire( Bits2 )
+    s.s_DOT_in_val = Wire( Bits17 )
     @update
     def isignal_s_DOT_in_val():
       s.s_DOT_in_val @= s.in_val
     
-    s.s_DOT_sel = Wire( Bits2 )
+    s.s_DOT_sel = Wire( Bits4 )
     @update
     def isignal_s_DOT_sel():
       s.s_DOT_sel @= s.sel
     
-    s.s_DOT_flattened_out_val = Wire( Bits8 )
+    s.s_DOT_flattened_out_val = Wire( mk_bits(272) )
     @update
     def osignal_s_DOT_flattened_out_val():
       s.flattened_out_val @= s.s_DOT_flattened_out_val
@@ -152,7 +152,16 @@ class Demux( Component ):
 
       # Write all outputs
       
-      s.s_DOT_flattened_out_val @= _ffi_m.flattened_out_val[0]
+      x = _ffi_m.flattened_out_val
+      s.s_DOT_flattened_out_val[0:32] @= x[0]
+      s.s_DOT_flattened_out_val[32:64] @= x[1]
+      s.s_DOT_flattened_out_val[64:96] @= x[2]
+      s.s_DOT_flattened_out_val[96:128] @= x[3]
+      s.s_DOT_flattened_out_val[128:160] @= x[4]
+      s.s_DOT_flattened_out_val[160:192] @= x[5]
+      s.s_DOT_flattened_out_val[192:224] @= x[6]
+      s.s_DOT_flattened_out_val[224:256] @= x[7]
+      s.s_DOT_flattened_out_val[256:272] @= x[8]
 
     @update_ff
     def seq_upblk():

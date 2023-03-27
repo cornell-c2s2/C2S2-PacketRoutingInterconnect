@@ -5,7 +5,7 @@ from pymtl3.stdlib import stream
 from pymtl3.passes.backends.verilog import *
 
 
-class parametricDemuxVRTL( VerilogPlaceholder, Component ):
+class parametricDemuxTestHarnessVRTL( VerilogPlaceholder, Component ):
 
   # Constructor
     def construct( s, p_nbits, p_noutputs):
@@ -15,11 +15,10 @@ class parametricDemuxVRTL( VerilogPlaceholder, Component ):
       # Interface
       s.in_val = InPort(mk_bits(p_nbits))
       s.sel = InPort(mk_bits(clog2(p_noutputs)))
-      # s.out_val = OutPort(mk_bits(p_nbits))
       s.flattened_out_val= OutPort(mk_bits(p_noutputs*p_nbits))
 
 
-Demux = parametricDemuxVRTL
+Demux = parametricDemuxTestHarnessVRTL
 
 
 

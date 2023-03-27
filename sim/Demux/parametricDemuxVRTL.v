@@ -6,30 +6,15 @@ module parametricDemuxVRTL
   parameter p_noutputs = 2
 )
 (
-  input  wire [p_nbits-1:0]                  in_val,
-  input  wire [$clog2(p_noutputs)-1:0]       sel,
-  output wire [p_noutputs*p_nbits-1:0]       flattened_out_val
+  input  logic [p_nbits-1:0]                  in_val,
+  input  logic [$clog2(p_noutputs)-1:0]       sel,
+  output logic [p_nbits-1:0] out_val [p_noutputs-1:0]
 );
-
-  // This is the normal output, but for test, all of its values concatonated into flattened_out_val
-  // For actual use of module, make this an output wire
-  wire [p_noutputs-1:0][p_nbits-1:0] out_val;
-
-
   genvar i;
   generate
     for (i = 0; i < p_noutputs; i = i + 1) begin : output_gen
       assign out_val[i] = (i == sel) ? in_val : {p_nbits{1'b0}};
     end
   endgenerate
-
-  // Concatenate output values
-  // REMOVE WHEN NOT TESTING AND SET OUTPUT VALUE TO OUT_VAL
-  generate
-    for (genvar i = 0; i < p_noutputs; i = i + 1) begin : output_gen
-      assign flattened_out_val[i*p_nbits +: p_nbits] = out_val[p_noutputs - 1 - i];
-    end
-  endgenerate
-
-
 endmodule
+
