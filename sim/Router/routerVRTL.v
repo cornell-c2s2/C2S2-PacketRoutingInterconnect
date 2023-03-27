@@ -1,5 +1,5 @@
-`include "muxes.v"
-`include "parametricDemuxVRTL.v"
+`include "../../../PacketRoutingInterconnect/sim/Router/muxes.v"
+`include "../../../PacketRoutingInterconnect/sim/Router/parametricDemuxVRTL.v"
 
 module routerVRTL
 #(
@@ -7,10 +7,12 @@ module routerVRTL
   parameter p_noutputs = 8
 )(
   input logic                                                    valid,
-  input logic ready [p_noutputs-1:0], 
+ 
   input logic  [p_nbits-1:0]                                     message_in, 
   output logic                                                  ready_out,
+  
   output logic [p_noutputs-1:0]                                 valid_out, 
+  input logic ready [p_noutputs-1:0], 
   output logic [p_nbits-$clog2(p_noutputs)-1:0] message_out [p_noutputs-1:0]
 );
 
