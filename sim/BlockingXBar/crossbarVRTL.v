@@ -1,7 +1,6 @@
 `ifndef PROJECT_CROSSBAR_V
 `define PROJECT_CROSSBAR_V
 
-
 //Crossbar in Verilog
 
 module crossbarVRTL
