@@ -32,7 +32,6 @@ module crossbaroneoutVRTL
 
     always @(posedge clk) begin
 
-
         send_msg = 0;
         send_val = 0;
 
