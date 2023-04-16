@@ -32,6 +32,9 @@ module crossbaroneoutVRTL
 
     always @(posedge clk) begin
 
+        for (integer j = 0; j < N_INPUTS; j = j+1) begin
+            recv_rdy[j] <= 0;
+        end
         if ( reset ) begin
             stored_control <= 0;
         end

@@ -1,7 +1,6 @@
 `ifndef PROJECT_CROSSBAR_V
 `define PROJECT_CROSSBAR_V
 
-
 //Crossbar in Verilog
 
 module crossbarVRTL
@@ -43,7 +42,7 @@ module crossbarVRTL
     assign control_rdy = 1;
 
     logic [$clog2(N_INPUTS)  - 1:0] input_sel;
-    logic [N_OUTPUTS - 1:0] output_sel;
+    logic [$clog2(N_OUTPUTS) - 1:0] output_sel;
 
     assign input_sel = stored_control[CONTROL_BIT_WIDTH - 1: CONTROL_BIT_WIDTH-$clog2(N_INPUTS)];
 
