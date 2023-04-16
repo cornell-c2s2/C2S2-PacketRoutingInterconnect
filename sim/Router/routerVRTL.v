@@ -1,19 +1,18 @@
-`include "../../../PacketRoutingInterconnect/sim/Router/muxes.v"
-`include "../../../PacketRoutingInterconnect/sim/Router/parametricDemuxVRTL.v"
+`include "../../../C2S2-PacketRoutingInterconnect/sim/Router/muxes.v"
+`include "../../../C2S2-PacketRoutingInterconnect/sim/Router/parametricDemuxVRTL.v"
 
 module routerVRTL
 #(
   parameter p_nbits = 32,
   parameter p_noutputs = 8
 )(
-  input logic                                                    valid,
- 
-  input logic  [p_nbits-1:0]                                     message_in, 
-  output logic                                                  ready_out,
+  input  logic                                  valid,
+  input  logic  [p_nbits-1:0]                   message_in, 
+  output logic                                  ready_out,
   
-  output logic [p_noutputs-1:0]                                 valid_out, 
-  input logic ready [p_noutputs-1:0], 
-  output logic [p_nbits-$clog2(p_noutputs)-1:0] message_out [p_noutputs-1:0]
+  output logic                                  valid_out   [0:p_noutputs-1], 
+  input  logic                                  ready       [0:p_noutputs-1], 
+  output logic [p_nbits-$clog2(p_noutputs)-1:0] message_out [0:p_noutputs-1]
 );
 
 logic valid_holder [p_noutputs-1:0];
@@ -44,16 +43,16 @@ assign cut_message = message_in[p_nbits-$clog2(p_noutputs)-1:0];
     .out_val(valid_holder)
   );
 
-  //Used to set valid bits to zero in the case the block is not ready
+
   generate
-    for ( genvar i = 0; i < p_noutputs; i = i + 1) begin : output_gen
-      assign valid_out[i] = (ready_out == 1) ? valid_holder[i] : 1'b0;
+    for ( genvar i = 0; i < p_noutputs; i = i + 1) begin 
+      assign valid_out[i] = valid_holder[i];
     end
   endgenerate
 
   //Assigns all the output wires to cut_message
   generate
-    for ( genvar j = 0; j < p_noutputs; j = j + 1) begin : output_gen
+    for ( genvar j = 0; j < p_noutputs; j = j + 1) begin 
       assign message_out[j] = cut_message;
     end
   endgenerate
@@ -61,8 +60,11 @@ assign cut_message = message_in[p_nbits-$clog2(p_noutputs)-1:0];
   //Ready is not of correct form for the mux. Needs to be changed...
   //Mismatch between port which is not an array, and expression which is an array.
   generate
-    for ( genvar k = 0; k < p_noutputs; k = k + 1) begin : output_gen
-      assign temp_ready[k +: 1] = ready[p_noutputs-k-1]; 
+    for ( genvar k = 0; k < p_noutputs; k = k + 1) begin 
+      assign temp_ready[k +: 1] = ready[k]; 
     end
   endgenerate
 endmodule
+
+
+

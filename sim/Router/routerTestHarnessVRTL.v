@@ -30,19 +30,19 @@ logic temp_ready [p_noutputs-1:0];
   );
 
   generate
-    for (genvar i = 0; i < p_noutputs; i = i + 1) begin : output_gen
+    for (genvar i = 0; i < p_noutputs; i = i + 1) begin 
       assign valid_out[i +: 1] = temp_valid_out[p_noutputs - 1 - i];
     end
   endgenerate
 
   generate
-    for ( genvar j = 0; j < p_noutputs; j = j + 1) begin : output_gen
+    for ( genvar j = 0; j < p_noutputs; j = j + 1) begin 
       assign message_out[j*(p_nbits-$clog2(p_noutputs)) +: p_nbits-$clog2(p_noutputs)] = temp_message_out[p_noutputs-j-1];
     end
   endgenerate
 
   generate
-    for ( genvar k = 0; k < p_noutputs; k = k + 1) begin : output_gen
+    for ( genvar k = 0; k < p_noutputs; k = k + 1) begin 
       assign temp_ready[p_noutputs-k-1] = ready[k +: 1];
     end
   endgenerate
