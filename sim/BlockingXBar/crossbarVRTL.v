@@ -32,18 +32,11 @@ module crossbarVRTL
 
     always @(posedge clk) begin
 
-        for (integer i = 0; i < N_OUTPUTS; i = i+1) begin
-            send_msg[i] = 0;
-            send_val[i] = 0;
-        end
-        for (integer j = 0; j < N_INPUTS; j = j+1) begin
-            recv_rdy[j] = 0;
-        end
         if ( reset ) begin
-            stored_control = 0;
+            stored_control <= 0;
         end
         else if ( control_val ) begin
-            stored_control = control;
+            stored_control <= control;
         end
     end
 
