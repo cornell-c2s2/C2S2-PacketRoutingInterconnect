@@ -3,6 +3,10 @@
 // iverilog -g2012 -o ConfigRegVRTLTest ConfigRegVRTLTest.v
 
 module top;
+
+  parameter ADDR_SIZE = 4;
+  parameter PAYLOAD_SIZE = 8;
+
   logic clk = 1;
   always #5 clk = ~clk;
 
