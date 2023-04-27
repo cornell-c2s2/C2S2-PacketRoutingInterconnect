@@ -10,11 +10,11 @@ module ConfigRegVRTL
   // I/O
   input logic clk,
   input logic reset,
-  //input logic recv_val,
-	//output logic recv_rdy,
-	//output logic send_val,
-	//input logic send_rdy,
-  input logic [ADDR_SIZE + PAYLOAD_SIZE:0] rec_msg,
+  input logic recv_val,
+	output logic recv_rdy,
+	output logic send_val,
+	input logic send_rdy,
+  input logic [ADDR_SIZE + PAYLOAD_SIZE:0] recv_msg,
   output logic [ADDR_SIZE + PAYLOAD_SIZE:0] send_msg
 );
 
@@ -23,28 +23,47 @@ module ConfigRegVRTL
   logic write;
   logic success;
   logic [PAYLOAD_SIZE - 1:0] payload;
+  logic [ADDR_SIZE + PAYLOAD_SIZE:0] msg;
+
 
   // Register
   always @(posedge clk) begin
+    $display("recv_rdy: %b, recv_val: %b, send_rdy: %b, send_val: %b", recv_rdy, recv_val, send_rdy, send_val);
     if (reset) begin
-      //recv_rdy <= 1;
-      //send_val <= 0;
-      send_msg <= '0;
+      $display("reset");
+      recv_rdy <= 1;
+      send_val <= 0;
+      msg <= '0;
+    end
+    else if(recv_val && recv_rdy) begin
+      $display("write");
+      msg <= {addr, success, payload};
+      recv_rdy <= 0;
+      send_val <= 1;
+    end
+    else if(send_val && send_rdy) begin
+      $display("send");
+      $display("%b",msg);
+      send_msg <= msg;
+      recv_rdy <= 1;
+      send_val <= 0;
     end
     else begin
-      send_msg <= {addr, success, payload};
-      //recv_rdy <= 0;
-      //send_val <= 0;
+      $display("else");
+      send_msg <= send_msg;
+      recv_rdy <= recv_rdy;
+      send_val <= send_val;
     end
+    $display("msg: %b", msg);
   end
 
   // Control
   always @(*) begin
-    if(rec_msg[ADDR_SIZE + PAYLOAD_SIZE: PAYLOAD_SIZE + 1] 
-       == CONFIG_ADDR && rec_msg[PAYLOAD_SIZE]) begin
-      addr = rec_msg[ADDR_SIZE + PAYLOAD_SIZE: PAYLOAD_SIZE + 1];
+    if(recv_msg[ADDR_SIZE + PAYLOAD_SIZE: PAYLOAD_SIZE + 1] 
+       == CONFIG_ADDR && recv_msg[PAYLOAD_SIZE]) begin
+      addr = recv_msg[ADDR_SIZE + PAYLOAD_SIZE: PAYLOAD_SIZE + 1];
       success = 1'b1;
-      payload = rec_msg[PAYLOAD_SIZE - 1:0]; 
+      payload = recv_msg[PAYLOAD_SIZE - 1:0]; 
     end
     else begin
       addr = '0;
