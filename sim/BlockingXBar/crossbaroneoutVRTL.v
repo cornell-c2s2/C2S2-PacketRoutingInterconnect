@@ -31,10 +31,7 @@ module crossbaroneoutVRTL
     logic [CONTROL_BIT_WIDTH - 1:0] stored_control;
 
     always @(posedge clk) begin
-
-        send_msg = 0;
-        send_val = 0;
-
+    
         for (integer j = 0; j < N_INPUTS; j = j+1) begin
             recv_rdy[j] <= 0;
         end

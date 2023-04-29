@@ -8,14 +8,13 @@ from pymtl3 import *
 from pymtl3.stdlib.test_utils import run_test_vector_sim
 
 
-from BlockingXBar.crossbarRTL import crossbarTestHarnessVRTL
+from BlockingXBar.crossbarRTL import crossbarVRTL
 
 # Basic Test
 def test_one ( cmdline_opts ): 
-  dut = crossbarTestHarnessVRTL( BIT_WIDTH = 32, N_INPUTS = 2, N_OUTPUTS = 2, CONTROL_BIT_WIDTH = 42)
   
-  run_test_vector_sim ( dut, [
-    ('recv_msg           recv_val recv_rdy* send_msg*           send_val* send_rdy control        control_val control_rdy*'),
+  run_test_vector_sim ( crossbarVRTL( BIT_WIDTH = 32, N_INPUTS = 2, N_OUTPUTS = 2, CONTROL_BIT_WIDTH = 42), [
+    ('recv_msg[0]  recv_val[0]  recv_rdy[0]*  recv_msg[1]  recv_val[1]  recv_rdy[1]*  send_msg[0]  send_val[0]*  send_rdy[0]  send_msg[1]  send_val[1]*  send_rdy[1]  control  control_val control_rdy*'),
     [0xFFFFFFFFFFFFFFFF, 0x3,     0x2,      0xFFFFFFFF00000000, 0x2,      0x3,     0x10000000000, 0x1,        0x1],
     [0xFFFFFFFFFFFFFFFF, 0x3,     0x2,      0x00000000FFFFFFFF, 0x1,      0x3,     0x20000000000, 0x1,        0x1],
     [0xFFFFFFFFAAAAAAAA, 0x3,     0x1,      0xAAAAAAAA00000000, 0x2,      0x3,     0x30000000000, 0x1,        0x1],

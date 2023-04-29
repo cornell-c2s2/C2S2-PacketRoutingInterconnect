@@ -1,1 +1,1 @@
-from .crossbarRTL import crossbarTestHarnessVRTL
+from .crossbarRTL import crossbarVRTL
