@@ -6,7 +6,7 @@ module VariableShiftVRTL(
     output  logic [31:0]    data_out
 );
 
-    always begin
+    always (@posedge clk) begin
         data_out = data_in >> shift_amt;
     end
 
