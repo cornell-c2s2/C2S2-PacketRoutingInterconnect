@@ -1,13 +1,19 @@
-module VariableShiftVRTL(
-    input                   clk;
-    input                   reset;
-    input   logic [31:0]    data_in,
-    input   logic [4:0]     shift_amt,
-    output  logic [31:0]    data_out
+module VariableShiftVRTL
+#(
+  // Parameters
+  parameter ADDR_SIZE    = 4,
+  parameter PAYLOAD_SIZE = 8,
+  parameter CONFIG_ADDR  = 4'b0000
+)(
+    input                                         clk;
+    input                                         reset;
+    input   logic [ADDR_SIZE + PAYLOAD_SIZE:0]    queue_out_msg,
+    input   logic [4:0]                           ctrl,
+    output  logic [ADDR_SIZE + PAYLOAD_SIZE:0]    send_msg
 );
 
     always (@posedge clk) begin
-        data_out = data_in >> shift_amt;
+        send_msg = queue_out_msg << ctrl;
     end
 
 endmodule
