@@ -2,6 +2,16 @@
 `include "../../../PacketRoutingInterconnect/sim/router/ParametricDemux.v"
 `include "../../../PacketRoutingInterconnect/sim/router/queues.v"
 
+/*
+	*	Module: Router
+  *
+	* Functionality: The router takes in an n-bit long message, and uses the first log2(number of outputs) of the input 
+  * to determine which receiving port receives a high valid bit. All receiving ports receive the input but not a corresponding
+  * high valid bit. The block itself outputs a low ready bit if its internal queue is full; otherwise the ready bit is high.
+  *
+  * Dependencies: ParametricMux.v, ParametricDemux.v, queues.v, arithmetic.v, muxes.v, regfiles.v, regs.v, trace.v 
+*/
+
 module Router
 #(
   parameter nbits = 32,
@@ -27,7 +37,7 @@ module Router
   logic                                           payload_val;
   logic                                           payload_rdy;
   
-  assign select =                                 payload_msg  [nbits-1 : nbits-$clog2(noutputs)];  
+  assign select =  payload_msg  [nbits-1 : nbits-$clog2(noutputs)];  
 
   vc_Queue #(
   .p_msg_nbits (nbits),
@@ -76,15 +86,3 @@ module Router
     end
   endgenerate
 endmodule
-
-//  seperate inputs/outputs into stream    DONE 
-//  get rid of conditional for valid bit   DONE
-//  fix mux                                DONE
-//  used unpacked arrays                   DONE
-//  try source/stream testing   
-//  get rid of harness                     DONE
-//  fix test cases to not need harness     DONE
-
-// add queue                               DONE
-// stop clipping of bits                   DONE
-// add to confluence
