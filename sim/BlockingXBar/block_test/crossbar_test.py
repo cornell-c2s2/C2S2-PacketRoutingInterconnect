@@ -5,6 +5,132 @@
 import pytest
 
 from pymtl3 import *
+from pymtl3.stdlib import stream
+from pymtl3.stdlib.test_utils import mk_test_case_table, run_sim
+from BlockingXBar.CrossbarRTL import CrossbarVRTL
+from pymtl3.passes.backends.verilog import *
+
+#------------------------------------------------------------------------------------------
+# TestHarness
+#------------------------------------------------------------------------------------------
+
+class TestHarness( Component ):
+
+  def construct( s, crossbar, BIT_WIDTH = 32, N_INPUTS = 2, N_OUTPUTS = 2, ADDRESS_BIT_WIDTH = 4, BLOCK_ADDRESS = 2 ):
+
+    # Instantiate models
+    s.src1      = stream.SourceRTL( mk_bits(BIT_WIDTH) ) 
+    s.src2      = stream.SourceRTL( mk_bits(BIT_WIDTH) ) 
+    s.sink1     = stream.SinkRTL  ( mk_bits(BIT_WIDTH) ) 
+    s.sink2     = stream.SinkRTL  ( mk_bits(BIT_WIDTH) ) 
+    s.ctrl_src  = stream.SourceRTL( mk_bits(BIT_WIDTH) ) 
+    s.crossbar  = crossbar
+
+    # Connect
+    s.src1.send         //= s.crossbar.recv[0]
+    s.src2.send         //= s.crossbar.recv[1]
+    s.ctrl_src.send     //= s.crossbar.ctrl
+    s.crossbar.send[0]  //= s.sink1.recv
+    s.crossbar.send[1]  //= s.sink2.recv
+    
+
+  def done ( s ):
+    return s.src1.done() and s.src2.done() and s.sink1.done() and s.sink2.done() and s.ctrl_src.done()
+  
+  def line_trace ( s ):
+    return s.ctrl_src.line_trace() + " > " + s.src1.line_trace() + " > " + s.src2.line_trace() + " > " + s.crossbar.line_trace() + " > " + s.sink1.line_trace() + " > " + s.sink2.line_trace()
+
+#-------------------------------------------------------------------------------------
+# Test Case Table
+#------------------------------------------------------------------------------------
+
+def zero_zero ():
+  return [ [ 0x28000000], 
+           [ 0x00000001 ], [ 0x00000002 ],
+           [ 0x00000001 ], [            ] ]
+
+def zero_one ():
+  return [ [ 0x2A000000], 
+           [ 0x00000001 ], [ 0x00000002 ],
+           [            ], [ 0x00000001 ] ]
+  
+def one_zero ():
+  return [ [ 0x2C000000], 
+           [ 0x00000001 ], [ 0x00000002 ],
+           [ 0x00000002 ], [            ] ]
+
+def one_one ():
+  return [ [ 0x2E000000], 
+           [ 0x00000001 ], [ 0x00000002 ],
+           [            ], [ 0x00000002 ] ]
+
+def no_write ():
+  return [ [ 0x26000000], 
+           [ 0x00000001 ], [ 0x00000002 ],
+           [ 0x00000001 ], [            ] ]
+
+test_case_table = mk_test_case_table([
+  (                     "msgs               control_delay  src_delay  sink_delay  BIT_WIDTH  N_INPUTS  N_OUTPUTS  ADDRESS_BIT_WDITH  BLOCK_ADDRESS"),
+  [ "zero_zero",        zero_zero,          4,             4,         4,          32,        2,        2,         4,                 2             ],
+  [ "zero_one",         zero_one,           4,             4,         4,          32,        2,        2,         4,                 2             ],
+  [ "one_zero",         one_zero,           4,             4,         4,          32,        2,        2,         4,                 2             ],
+  [ "one_one",          one_one,            4,             4,         4,          32,        2,        2,         4,                 2             ],
+  [ "no_write",         no_write,           4,             4,         4,          32,        2,        2,         4,                 2             ],
+])
+
+
+def package( array, bitwidth ):
+  input = Bits(1)
+  bit_convert = mk_bits(bitwidth)
+  output = input
+  for i in range(len(array)):
+    output = concat( bit_convert(array[i]), output )
+  return output
+
+#-------------------------------------------------------------------------
+# TestHarness
+#-------------------------------------------------------------------------
+
+@pytest.mark.parametrize( **test_case_table )
+def test( test_params, cmdline_opts ):
+
+  th = TestHarness( CrossbarVRTL(test_params.BIT_WIDTH, test_params.N_INPUTS, test_params.N_OUTPUTS, test_params.ADDRESS_BIT_WDITH, test_params.BLOCK_ADDRESS), 
+                                            test_params.BIT_WIDTH, test_params.N_INPUTS, test_params.N_OUTPUTS, test_params.ADDRESS_BIT_WDITH, test_params.BLOCK_ADDRESS)
+
+  msgs = test_params.msgs()
+  
+  th.set_param("top.ctrl_src.construct",
+    msgs=msgs[0],
+    initial_delay=test_params.control_delay+3,
+    interval_delay=test_params.control_delay )
+
+  th.set_param("top.src1.construct",
+    msgs=msgs[1],
+    initial_delay=test_params.src_delay+5,
+    interval_delay=test_params.src_delay )
+  
+  th.set_param("top.src2.construct",
+    msgs=msgs[2],
+    initial_delay=test_params.src_delay+5,
+    interval_delay=test_params.src_delay )
+
+  th.set_param("top.sink1.construct",
+    msgs=msgs[3],
+    initial_delay=test_params.sink_delay+7,
+    interval_delay=test_params.sink_delay )
+
+  th.set_param("top.sink2.construct",
+    msgs=msgs[4],
+    initial_delay=test_params.sink_delay+7,
+    interval_delay=test_params.sink_delay )
+  
+  run_sim( th, cmdline_opts, duts=['crossbar'] )
+
+
+'''
+import pytest
+
+from pymtl3 import *
 from pymtl3.stdlib.test_utils import run_test_vector_sim
 
 
@@ -104,3 +230,4 @@ def test_seven ( cmdline_opts ):
     [0xAAAAAAAABBBBBBBB, 0x0,     0x1,      0x00000000BBBBBBBB, 0x0,      0x3,     0x00000000000, 0x1,        0x1],
     [0xAAAAAAAAAAAAAAAA, 0x0,     0x2,      0xAAAAAAAA00000000, 0x0,      0x3,     0x00000000000, 0x1,        0x1],
   ],cmdline_opts)
+'''

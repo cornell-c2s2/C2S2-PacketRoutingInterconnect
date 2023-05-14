@@ -1,17 +1,17 @@
 `ifndef PROJECT_CROSSBAR_V
 `define PROJECT_CROSSBAR_V
 
+`include "queues.v"
+
 //Crossbar in Verilog
 
-module crossbarVRTL
+module CrossbarVRTL
     #(
         parameter BIT_WIDTH = 32, 
         parameter N_INPUTS = 2,
         parameter N_OUTPUTS = 2,
-        parameter CONTROL_BIT_WIDTH = 42,
         parameter ADDRESS_BIT_WIDTH = 4,
-        parameter BLOCK_ADDRESS = 2,
-        parameter WRITE_BIT_WIDTH = 1
+        parameter BLOCK_ADDRESS = 2
     )
     (
         input  logic [BIT_WIDTH - 1:0] recv_msg [0:N_INPUTS - 1] ,
@@ -24,25 +24,27 @@ module crossbarVRTL
 
         input  logic                   reset                     ,
         input  logic                   clk                       ,
-
-        input  logic [CONTROL_BIT_WIDTH - 1:0]      in_control   ,
-        input  logic                                control_val  ,
-        output logic                                control_rdy  ,
-        output logic [CONTROL_BIT_WIDTH - 1:0]      out_control
+        
+        input  logic [BIT_WIDTH - 1:0] ctrl_msg                  ,
+        input  logic                   ctrl_val                  ,
+        output logic                   ctrl_rdy                  
+        //output logic [BIT_WIDTH - 1:0] ctrl_out
     );
 
-    logic [CONTROL_BIT_WIDTH - 1:0] stored_control;
+    logic [BIT_WIDTH - 1:0]         stored_control;
     logic [$clog2(N_INPUTS)  - 1:0] input_sel;
     logic [$clog2(N_OUTPUTS) - 1:0] output_sel;
     logic [ADDRESS_BIT_WIDTH - 1:0] block_sel;
-    logic [WRITEBACK_BIT_WIDTH - 1:0] write;
-    logic [BIT_WIDTH - 1:0] queue_out [N_INPUTS - 1:0];
-    logic queue_send_val [N_INPUTS - 1:0];
+    logic                           write;
+    logic [BIT_WIDTH - 1:0]         queue_out      [N_INPUTS - 1:0];
+    logic                           queue_send_val [N_INPUTS - 1:0];
 
-    assign input_sel = stored_control[CONTROL_BIT_WIDTH-ADDRESS_BIT_WIDTH-WRITE_BIT_WIDTH-1 : CONTROL_BIT_WIDTH-ADDRESS_BIT_WIDTH-WRITE_BIT_WIDTH-$clog2(N_INPUTS)];
-    assign output_sel = stored_control[CONTROL_BIT_WIDTH-ADDRESS_BIT_WIDTH-WRITE_BIT_WIDTH-$clog2(N_INPUTS) : CONTROL_BIT_WIDTH-ADDRESS_BIT_WIDTH-WRITE_BIT_WIDTH-$clog2(N_INPUTS)-$clog2(N_OUTPUTS)];
-    assign block_sel = stored_control[CONTROL_BIT_WIDTH-1 : CONTROL_BIT_WIDTH-ADDRESS_BIT_WIDTH]
-    assign write = stored_control[CONTROL_BIT_WIDTH-ADDRESS_BIT_WIDTH : CONTROL_BIT_WIDTH-ADDRESS_BIT_WIDTH-WRITE_BIT_WIDTH]
+    assign input_sel  = stored_control[BIT_WIDTH-ADDRESS_BIT_WIDTH-1                    : BIT_WIDTH-ADDRESS_BIT_WIDTH-1-$clog2(N_INPUTS)];
+    assign output_sel = stored_control[BIT_WIDTH-ADDRESS_BIT_WIDTH-1-$clog2(N_INPUTS)-1 : BIT_WIDTH-ADDRESS_BIT_WIDTH-1-$clog2(N_INPUTS)-$clog2(N_OUTPUTS)];
+    assign block_sel  = ctrl_msg      [BIT_WIDTH-1                                      : BIT_WIDTH-ADDRESS_BIT_WIDTH];
+    assign write      = ctrl_msg      [BIT_WIDTH-ADDRESS_BIT_WIDTH                      : BIT_WIDTH-ADDRESS_BIT_WIDTH-1];
+
+    assign ctrl_rdy = 1;
 
     genvar i;
     generate
@@ -57,7 +59,7 @@ module crossbarVRTL
                 .recv_rdy(recv_rdy[i]),
                 .recv_msg(recv_msg[i]),
                 .send_val(queue_send_val[i]),
-                .send_rdy(1),
+                .send_rdy(send_rdy[output_sel]),
                 .send_msg(queue_out[i]),
                 .num_free_entries()
             );
@@ -70,25 +72,26 @@ module crossbarVRTL
         if ( reset ) begin
             stored_control <= 0;
         end
-        else if ( control_val && write) begin
-            stored_control <= in_control;
+        else if( ctrl_val && write ) begin
+            stored_control <= ctrl_msg;
         end
-        
+        /*
         if (block_sel == BLOCK_ADDRESS) begin
-            out_control <= in_control;
+            ctrl_out <= ctrl_msg;
         end
         else begin
-            out_control <= 0;
+            ctrl_out <= 0;
         end
+        */
         
     end
 
     always @(*) begin
 
         for (integer i = 0; i < N_OUTPUTS; i = i+1) begin
-            if ( (i == output_sel) && (queue_send_val[input_sel] == 1)) begin
+            if ( (i == output_sel)) begin
                 send_msg[i] = queue_out[input_sel];
-                send_val[i] = 1;
+                send_val[i] = queue_send_val[input_sel];
             end
             else begin
                 send_msg[i] = 0;
@@ -97,8 +100,6 @@ module crossbarVRTL
         end
 
     end
-
-    assign control_rdy = 1; // WHAT TO DO WITH CONTROL READY ???
 
 
 endmodule

@@ -5,10 +5,10 @@
 `ifndef VC_QUEUES_V
 `define VC_QUEUES_V
 
-`include "../vc/regs.v"
-`include "../vc/muxes.v"
-`include "../vc/regfiles.v"
-`include "../vc/trace.v"
+`include "regs.v"
+`include "muxes.v"
+`include "regfiles.v"
+`include "trace.v"
 
 //------------------------------------------------------------------------
 // Defines
