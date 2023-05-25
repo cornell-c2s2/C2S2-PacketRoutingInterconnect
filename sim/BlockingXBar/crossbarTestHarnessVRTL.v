@@ -53,37 +53,37 @@ crossbarVRTL #(
 
   generate
     for (genvar i = 0; i < N_OUTPUTS; i = i + 1) begin : output_gen
-      assign send_val[i +: 1] = temp_send_val[N_OUTPUTS - 1 - i];
+      assign send_val[i +: 1] = temp_send_val[i];
     end
   endgenerate
 
   generate
     for (genvar j = 0; j < N_INPUTS; j = j + 1) begin : output_gen
-      assign recv_rdy[j +: 1] = temp_recv_rdy[N_INPUTS - 1 - j];
+      assign recv_rdy[j +: 1] = temp_recv_rdy[j];
     end
   endgenerate
 
   generate
     for ( genvar l = 0; l < N_OUTPUTS; l = l + 1) begin : output_gen
-      assign send_msg[l*(BIT_WIDTH) +: BIT_WIDTH] = temp_send_msg[N_OUTPUTS-l-1];
+      assign send_msg[l*(BIT_WIDTH) +: BIT_WIDTH] = temp_send_msg[l];
     end
   endgenerate
 
   generate
     for ( genvar k = 0; k < N_INPUTS; k = k + 1) begin : output_gen
-      assign temp_recv_val[N_INPUTS-k-1] = recv_val[k +: 1];
+      assign temp_recv_val[k] = recv_val[k +: 1];
     end
   endgenerate
 
   generate
     for ( genvar m = 0; m < N_OUTPUTS; m = m + 1) begin : output_gen
-      assign temp_send_rdy[N_OUTPUTS-m-1] = send_rdy[m +: 1];
+      assign temp_send_rdy[m] = send_rdy[m +: 1];
     end
   endgenerate
 
   generate
     for ( genvar n = 0; n < N_INPUTS; n = n + 1) begin : output_gen
-      assign temp_recv_msg[N_INPUTS-n-1] = recv_msg[n*(BIT_WIDTH) +: BIT_WIDTH];
+      assign temp_recv_msg[n] = recv_msg[n*(BIT_WIDTH) +: BIT_WIDTH];
     end
   endgenerate
 

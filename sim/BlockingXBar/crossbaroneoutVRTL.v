@@ -24,17 +24,13 @@ module crossbaroneoutVRTL
         input  logic                   clk                       ,
 
         input  logic [CONTROL_BIT_WIDTH - 1:0]      control      ,
-        input  logic                   control_val               ,
-        output logic                   control_rdy               
+        input  logic                                control_val  ,
+        output logic                                control_rdy               
     );
 
     logic [CONTROL_BIT_WIDTH - 1:0] stored_control;
 
     always @(posedge clk) begin
-
-        for (integer j = 0; j < N_INPUTS; j = j+1) begin
-            recv_rdy[j] <= 0;
-        end
         if ( reset ) begin
             stored_control <= 0;
         end
@@ -54,12 +50,10 @@ module crossbaroneoutVRTL
 
         send_msg = recv_msg[input_sel];
         send_val = recv_val[input_sel];
+        recv_rdy[input_sel] = send_rdy;
 
         for (integer j = 0; j < N_INPUTS; j = j+1) begin
-            if (j == input_sel) begin
-                recv_rdy[j] = send_rdy; 
-            end
-            else begin
+            if (j != input_sel) begin
                 recv_rdy[j] = 0;
             end
         end

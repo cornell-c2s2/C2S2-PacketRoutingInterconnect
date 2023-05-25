@@ -67,7 +67,7 @@ module ArbitratorVRTL
       grants_index = encoder_out;
     end
     else begin
-      grants_index = grants_index;
+      grants_index = old_grants_index;
     end
   end
 
@@ -108,5 +108,3 @@ module ArbitratorVRTL
   end
 
 endmodule
-
-
